@@ -37,12 +37,12 @@ head(glassdoor)
 
 ## Descripción de las variables:
 
-jobtitle: profesión, nominal
-gender: género, dicotómica
-age: edad, numérica
-performance: desempeño, categórica ordinal
-education: Nivel educativo, nominal
-department: Departamento donde se desempeña, nominal
-seniority: antiguedad, numérica si se considera como número de años en la empresa
-income: ingresos, numérica
-bonus: extras, numérica
+- jobtitle: profesión, nominal
+- gender: género, dicotómica
+- age: edad, numérica
+- performance: desempeño, categórica ordinal
+- education: Nivel educativo, nominal
+- department: Departamento donde se desempeña, nominal
+- seniority: antiguedad, numérica si se considera como número de años en la empresa
+- income: ingresos, numérica
+- bonus: extras, numérica
