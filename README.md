@@ -52,3 +52,43 @@ Variables:
 - seniority: antiguedad, numérica si se considera como número de años en la empresa
 - income: salario, numérica
 - bonus: extras, numérica
+
+## Estadística descriptiva
+
+Estructura del conjunto de datos
+
+```{r}
+str(glassdoor)
+```
+
+Librerías para descripción
+
+```{r}
+library("tidyverse")
+library("skimr")
+library("summarytools")
+library("modeest")
+library("ggpubr")
+```
+
+## Convertimos variables respectivas a factores (si se considera)
+```{r}
+factores <- c("performance")
+glassdoor %>% mutate_at(factores,factor) -> data
+```
+
+```{r}
+str(data)
+```
+
+```{r}
+summary(data)
+```
+
+Otra forma de obtener un resumen y adicionalmente contar datos faltantes
+
+```{r}
+skim(data)
+```
+
+
