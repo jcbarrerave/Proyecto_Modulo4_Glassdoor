@@ -39,6 +39,7 @@ head(glassdoor)
 
 Contexto: El dataset contiene información sobre 1000 empleados de diferentes profesiones, niveles educativos, salarios, edades y departamentos donde se desempeñan.
 
+Problema de negocio: Identificar patrones en la data que permitan explorar el comportamiento del campo laboral, con base en la demanda profesional, el nivel educativo o sus salarios.
 
 Variables:
 
