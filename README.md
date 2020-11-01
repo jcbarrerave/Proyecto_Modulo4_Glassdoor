@@ -93,6 +93,8 @@ skim(data)
 
 ## Preguntas exploratorias
 
+###Análisis univariado
+
 Cómo se distribuye la edad?
 
 ```{r}
