@@ -104,3 +104,45 @@ boxplot(data$age)
 ```
 
 La edad tuvo un valor mínimo de 18 y máximo de 65. El valor central corresponde a una edad de 41 años (mediana). El 50% de los datos está distribuido entre 30 y 55 años y tienen una distribución más o menos simétrica.
+
+
+Frecuencia del género
+
+```{r}
+ggplot(data, aes(x = gender))+
+  geom_bar(stat="count")+
+  theme_minimal()
+```
+
+Frecuencia del nivel educativo
+
+```{r}
+# Ordenado
+# Función para reordenar los factores de un vector en orden decreciente
+reorder_size <- function(x) {
+        factor(x, levels = names(sort(table(x), decreasing = TRUE)))
+}
+ggplot(data, aes(x = reorder_size(education)))+
+  geom_bar(stat="count")+
+  theme_minimal()
+```
+Frecuencia según desempeño
+
+```{r}
+# Sin orden
+ggplot(data, aes(x = performance))+
+  geom_bar(stat="count")+
+  theme_minimal()
+```
+
+Frecuencia según la profesión
+
+```{r}
+reorder_size <- function(x) {
+        factor(x, levels = names(sort(table(x), decreasing = TRUE)))
+}
+ggplot(data, aes(x = reorder_size(jobtitle)))+
+  geom_bar(stat="count")+
+  theme_minimal()
+```
+
