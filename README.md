@@ -35,7 +35,12 @@ glassdoor <- read.csv('glassdoordata.csv',header=T,sep=',')
 head(glassdoor)
 ```
 
-## Descripción de las variables:
+## Contexto y descripción de las variables:
+
+Contexto: El dataset contiene información sobre 1000 empleados de diferentes profesiones, niveles educativos, salarios, edades y departamentos donde se desempeñan.
+
+
+Variables:
 
 - jobtitle: profesión, nominal
 - gender: género, dicotómica
@@ -44,5 +49,5 @@ head(glassdoor)
 - education: Nivel educativo, nominal
 - department: Departamento donde se desempeña, nominal
 - seniority: antiguedad, numérica si se considera como número de años en la empresa
-- income: ingresos, numérica
+- income: salario, numérica
 - bonus: extras, numérica
