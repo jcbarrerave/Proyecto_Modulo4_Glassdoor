@@ -91,4 +91,16 @@ Otra forma de obtener un resumen y adicionalmente contar datos faltantes
 skim(data)
 ```
 
+## Preguntas exploratorias
 
+Cómo se distribuye la edad?
+
+```{r}
+plot(density(data$age))
+```
+
+```{r}
+boxplot(data$age)
+```
+
+La edad tuvo un valor mínimo de 18 y máximo de 65. El valor central corresponde a una edad de 41 años (mediana). El 50% de los datos está distribuido entre 30 y 55 años y tienen una distribución más o menos simétrica.
