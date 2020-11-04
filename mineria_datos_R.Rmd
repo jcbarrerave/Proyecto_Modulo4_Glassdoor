@@ -1,0 +1,399 @@
+---
+title: "markdown_mineria_de_datos"
+author: "Ana María Barajas Otálora" "Dorys Trujillo Beltrán" "Eduardo Alberto Camargo" "Jenny Consuelo Barrera" "Joan Steven Rigeros Mateus" "Stefania Coronell Solano"
+date: "10/31/2020"
+output: html_document
+---
+
+# 1. Exploración: transformación y limpieza
+
+## Cargar librerías
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+library(reshape)
+```
+
+Definimos ruta de trabajo
+
+```{r}
+setwd('D:/Documentos/CURSOS/DIPLOMADO CIENCIA DE DATOS/Modulo 4/proyecto/mineria_de_datos') 
+```
+
+```{r}
+glassdoor <- read.csv('glassdoorglassdoor.csv',header=T,sep=',')
+head(glassdoor)
+```
+
+## Contexto y descripción de las variables:
+
+Contexto: El glassdoorset contiene información sobre 1000 empleados de diferentes profesiones, niveles educativos, salarios, edades y departamentos donde se desempeñan.
+
+Problema de negocio: Identificar patrones en la glassdoor que permitan explorar el comportamiento del campo laboral, con base en la demanda profesional, el nivel educativo o sus salarios.
+
+Variables:
+
+- jobtitle: profesión, nominal
+- gender: género, dicotómica
+- age: edad, numérica
+- performance: desempeño, categórica ordinal
+- education: Nivel educativo, nominal
+- department: Departamento donde se desempeña, nominal
+- seniority: antiguedad, numérica si se considera como número de años en la empresa
+- income: salario, numérica
+- bonus: extras, numérica
+
+### Número de filas y columnas
+
+```{r}
+print(nrow(glassdoor))
+```
+
+```{r}
+print(ncol(glassdoor))
+```
+
+
+## Estadística descriptiva
+
+Estructura del conjunto de datos
+
+```{r}
+str(glassdoor)
+```
+
+Librerías para descripción
+
+```{r}
+library("tidyverse")
+library("skimr")
+library("summarytools")
+library("modeest")
+library("ggpubr")
+```
+
+## Convertimos variables respectivas a factores (si se considera)
+
+```{r}
+str(glassdoor)
+```
+
+```{r}
+summary(glassdoor)
+```
+Convertir education en numérica:
+
+
+```{r}
+glassdoor$education[glassdoor$education == 'PhD'] <- 4
+glassdoor$education[glassdoor$education == 'Masters'] <- 3
+glassdoor$education[glassdoor$education == 'High School'] <- 1
+glassdoor$education[glassdoor$education == 'College'] <- 2
+```
+
+```{r}
+   glassdoor$education <- as.numeric(glassdoor$education)
+
+```
+
+
+```{r}
+str(glassdoor)
+```
+
+Otra forma de obtener un resumen y adicionalmente contar datos faltantes
+
+```{r}
+skim(glassdoor)
+```
+
+## Preguntas exploratorias
+
+###Análisis univariado
+
+Cómo se distribuye la edad?
+
+```{r}
+hist(glassdoor$age)
+```
+
+
+```{r}
+plot(density(glassdoor$age))
+```
+
+
+```{r}
+boxplot(glassdoor$age)
+```
+
+
+La edad tuvo un valor mínimo de 18 y máximo de 65. El valor central corresponde a una edad de 41 años (mediana), el número de individuos con edades entre 18 y 20 años fue menor en comparación con los demás. El 50% de los datos está distribuido entre 30 y 55 años y tienen una distribución más o menos simétrica.
+
+
+Frecuencia del género
+
+```{r}
+ggplot(glassdoor, aes(x = gender))+
+  geom_bar(stat="count")+
+  theme_minimal()
+```
+Buscar proporción
+
+```{r}
+proall.table(glassdoor$gender) 
+```
+
+```{r}
+ggplot(glassdoor = glassdoor) +
+  aes(x = education, y = age) +
+  geom_boxplot(fill = "#0c4c8a") +
+  theme_minimal()
+
+```
+
+Explicar...
+
+```{r}
+kruskal.test(glassdoor$age, glassdoor$education)
+```
+
+
+
+Frecuencia del nivel educativo
+
+```{r}
+# Ordenado
+# Función para reordenar los factores de un vector en orden decreciente
+reorder_size <- function(x) {
+        factor(x, levels = names(sort(table(x), decreasing = TRUE)))
+}
+ggplot(glassdoor, aes(x = reorder_size(education)))+
+  geom_bar(stat="count")+
+  theme_minimal()
+```
+
+
+Frecuencia según desempeño
+
+```{r}
+# Sin orden
+ggplot(glassdoor, aes(x = performance))+
+  geom_bar(stat="count")+
+  theme_minimal()
+```
+
+Frecuencia según la profesión
+
+```{r}
+reorder_size <- function(x) {
+        factor(x, levels = names(sort(table(x), decreasing = TRUE)))
+}
+ggplot(glassdoor, aes(x = reorder_size(jobtitle)))+
+  geom_bar(stat="count")+
+  theme_minimal()
+```
+
+Frecuencia según el departamento
+
+```{r}
+reorder_size <- function(x) {
+        factor(x, levels = names(sort(table(x), decreasing = TRUE)))
+}
+ggplot(glassdoor, aes(x = reorder_size(department)))+
+  geom_bar(stat="count")+
+  theme_minimal()
+```
+
+
+
+
+
+### Histogramas para los ingresos y extras:
+
+```{r}
+p1 <- ggplot(glassdoor, aes(x=income)) + geom_histogram(color="blue", fill="blue")
+p2 <- ggplot(glassdoor, aes(x=bonus)) + geom_histogram(color="blue", fill="blue")
+
+ggarrange(p1, p2)
+```
+
+Histograma salario
+
+```{r}
+hist(glassdoor$income)
+```
+
+```{r}
+boxplot(glassdoor$income)
+```
+
+
+### Análisis Bivariado
+
+Número de empleados por departamento y desempeño
+
+```{r}
+empleados_peformance_department <- as.glassdoor.frame(glassdoor %>% count(department,performance))
+```
+```{r}
+p <- ggplot(empleados_peformance_department, aes(performance, n, colour = factor(department))) +
+  geom_bar(stat="identity")+ylab("Empleados")
+
+p + facet_grid(vars(department), scales = "fixed")
+```
+
+Número de empleados por género y desempeño
+
+```{r}
+empleados_peformance_gender <- as.glassdoor.frame(glassdoor %>% count(gender,performance))
+```
+
+
+```{r}
+p <- ggplot(empleados_peformance_gender, aes(performance, n, colour = factor(gender))) +
+  geom_bar(stat="identity")+ylab("Empleados")
+
+p + facet_grid(vars(gender), scales = "fixed")
+
+
+```
+
+Salario y desempeño
+
+```{r}
+p <- ggplot(glassdoor, aes(as.factor(performance), income))
+p + geom_boxplot()
+```
+```{r}
+kruskal.test(glassdoor$income, glassdoor$performance)
+```
+
+Salario y departamento
+
+```{r}
+p <- ggplot(glassdoor, aes(as.factor(department), income))
+p + geom_boxplot()
+```
+
+```{r}
+kruskal.test(glassdoor$income, glassdoor$department)
+```
+
+Salario y antiguedad en la empresa:
+
+```{r}
+p <- ggplot(glassdoor, aes(as.factor(seniority), income))
+p + geom_boxplot()
+```
+
+```{r}
+kruskal.test(glassdoor$income, glassdoor$seniority)
+```
+Salario por profesión:
+
+```{r}
+p <- ggplot(glassdoor, aes(as.factor(jobtitle), income))
+p + geom_boxplot()
+```
+
+```{r}
+kruskal.test(glassdoor$income, glassdoor$jobtitle)
+```
+
+¿Cuáles son las profesiones mejor pagadas?
+
+```{r}
+mean_profesion <- glassdoor %>%
+                      group_by(jobtitle) %>%
+                      summarise(mean(income)) 
+
+as.glassdoor.frame(mean_profesion)-> df_profesion
+colnames(df_profesion)[2] <- "Promedio"
+arrange(df_profesion, -Promedio)
+```
+La profesión mejor pagada es Manager (gerente), luego está el ingeniero de software. Por último los que tienen menos ingresos son asociado de almacén, conductor y asociado de mercadeo.
+
+
+Salario y nivel educativo:
+
+```{r}
+p <- ggplot(glassdoor, aes(as.factor(education), income))
+p + geom_boxplot()
+```
+
+```{r}
+kruskal.test(glassdoor$income, glassdoor$education)
+```
+
+Salario y género:
+
+```{r}
+p <- ggplot(glassdoor, aes(as.factor(gender), income))
+p + geom_boxplot()
+```
+
+```{r}
+kruskal.test(glassdoor$income, glassdoor$gender)
+```
+
+Se encontraron diferencias de salarios entre el departamento, la antiguedad, la profesión, el nivel educativo y el género con base en la prueba kruskall-wallis.
+
+
+# Clusterización
+
+```{r}
+# selección variables de interés
+var_int <- glassdoor[,c('age','income','bonus','education','performance', 'seniority')]
+head(var_int)
+
+```
+
+```{r}
+# estandarizar variables 
+varint_scale <-scale(var_int)
+head(varint_scale)
+```
+
+Métodos para definir número de clusters:
+
+```{r}
+library(factoextra)
+```
+
+
+```{r}
+fviz_nbclust(varint_scale, kmeans, method = "silhouette")
+```
+
+
+```{r}
+fviz_nbclust(varint_scale, kmeans, method = "wss")
+
+```
+
+Definimos 4 clusters con base en los análisis anteriores.
+
+Creamos una semilla:
+
+```{r}
+set.seed(100)
+glassdoor_kmeans <- kmeans(varint_scale, centers = 4 )
+```
+
+
+```{r}
+names(glassdoor_kmeans)
+glassdoor_kmeans$centers
+
+```
+
+```{r}
+glassdoor$cluster <- glassdoor_kmeans$cluster
+
+```
+
+Revisar códigos para las gráficas del cluster
